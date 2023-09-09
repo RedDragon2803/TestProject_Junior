@@ -78,6 +78,11 @@ namespace ClinicApp.XamlPages
                     status = false;
                     messageBuilder.Append("Введите дату рождения корректно. \nДата рождения не может быть в будущем.");
                 }
+                else if (dateOfBirth < new DateTime(1753, 01, 01))
+                {
+                    status = false;
+                    messageBuilder.Append("Введите дату рождения корректно. \nДата рождения не может быть ранее 1 января 1753г.");
+                }
                 #endregion
                 #region Checking entered address
                 if (String.IsNullOrEmpty(address))
