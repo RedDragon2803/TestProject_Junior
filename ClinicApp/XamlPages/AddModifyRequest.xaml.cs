@@ -65,11 +65,6 @@ namespace ClinicApp.XamlPages
                     status = false;
                     messageBuilder.Append("Дата обращения - обязательное поле для ввода.\n");
                 }
-                else if (dateOfRequest < new DateTime(1753, 01, 01))
-                {
-                    status = false;
-                    messageBuilder.Append("Введите дату обращения корректно. \nДата обращения не может быть ранее 1 января 1753г.");
-                }
                 #endregion
                 #region Checking entered purpose of request
                 if (String.IsNullOrEmpty(purpose))

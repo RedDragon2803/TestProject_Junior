@@ -6,6 +6,7 @@ using System.Windows.Media;
 using ClinicApp.EntityModels;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace ClinicApp.XamlPages
 {
@@ -78,11 +79,6 @@ namespace ClinicApp.XamlPages
                     status = false;
                     messageBuilder.Append("Введите дату рождения корректно. \nДата рождения не может быть в будущем.");
                 }
-                else if (dateOfBirth < new DateTime(1753, 01, 01))
-                {
-                    status = false;
-                    messageBuilder.Append("Введите дату рождения корректно. \nДата рождения не может быть ранее 1 января 1753г.");
-                }
                 #endregion
                 #region Checking entered address
                 if (String.IsNullOrEmpty(address))
@@ -112,7 +108,8 @@ namespace ClinicApp.XamlPages
                             PhoneNumber = phone.ToString(),
                             DateOfBirth = dateOfBirth.GetValueOrDefault(),
                             Address = address,
-                            Gender = gender
+                            Gender = gender,
+                            Age = AgeCalculation(dateOfBirth.GetValueOrDefault())
                         };
                         var sucess = repository.AddPatientCard(patientCard);
                         if (await sucess)
@@ -132,6 +129,7 @@ namespace ClinicApp.XamlPages
                         m_cardToModify.DateOfBirth = dateOfBirth.GetValueOrDefault();
                         m_cardToModify.Address = address;
                         m_cardToModify.Gender = gender;
+                        m_cardToModify.Age = AgeCalculation(dateOfBirth.GetValueOrDefault());
                         repository.ModifyPatientCard(m_cardToModify);
                         mainFrame.GoBack();
                     }
@@ -179,6 +177,13 @@ namespace ClinicApp.XamlPages
             datePickerBirth.SelectedDate = cardToModify.DateOfBirth;
             txtBoxAddress.Text = cardToModify.Address;
             comboBlockGender.SelectedIndex = (Int32)cardToModify.Gender;
+        }
+
+        private Int32 AgeCalculation(DateTime birthDate)
+        {
+            Int32 age = DateTime.Today.Year - birthDate.Year;
+            if (birthDate > DateTime.Today.AddYears(-age)) age--;
+            return age;
         }
     }
 }
